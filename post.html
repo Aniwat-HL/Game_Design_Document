@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="th" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title id="docTitle">GDD Blog | เอกสาร</title>
+  <meta name="description" content="อ่าน Game Design Document พร้อมสารบัญอัตโนมัติ">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>">
+</head>
+<body>
+<header class="site-header">
+  <div class="container nav">
+    <a href="./" class="brand">
+      <span class="logo">🎮</span>
+      <span class="brand-text" id="siteTitle">GDD Blog</span>
+    </a>
+
+    <div class="actions">
+      <button id="themeToggle" class="btn ghost" aria-label="Toggle theme">🌓</button>
+      <a id="repoLink" class="btn" target="_blank" rel="noopener">ดูบน GitHub</a>
+    </div>
+  </div>
+</header>
+
+<main class="container post-layout">
+  <article class="post">
+    <header class="post-head">
+      <h1 id="postTitle">กำลังโหลด…</h1>
+      <div class="meta">
+        <span id="postDate"></span>
+        <span>&middot;</span>
+        <span id="readingTime"></span>
+      </div>
+      <div id="postTags" class="taglist"></div>
+    </header>
+
+    <div id="postContent" class="markdown-body">
+      <!-- content here -->
+    </div>
+  </article>
+
+  <aside class="toc-wrap">
+    <div class="toc card">
+      <div class="toc-title">สารบัญ</div>
+      <nav id="toc"></nav>
+    </div>
+  </aside>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <small>© <span id="year"></span> <span id="siteFooterTitle">GDD Blog</span>.</small>
+  </div>
+</footer>
+
+<script src="assets/js/main.js"></script>
+<script>
+  window.__PAGE__ = "post";
+</script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="th" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GDD Blog | คลัง Game Design Document</title>
+  <meta name="description" content="บล็อกเก็บ Game Design Document พร้อมค้นหา แท็ก และสารบัญอัตโนมัติ">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>">
+</head>
+<body>
+<header class="site-header">
+  <div class="container nav">
+    <a href="./" class="brand">
+      <span class="logo">🎮</span>
+      <span class="brand-text" id="siteTitle">GDD Blog</span>
+    </a>
+
+    <div class="actions">
+      <button id="themeToggle" class="btn ghost" aria-label="Toggle theme">🌓</button>
+      <a id="repoLink" class="btn" target="_blank" rel="noopener">ดูบน GitHub</a>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+  <section class="hero">
+    <h1 id="siteHeading">คลัง Game Design Documents</h1>
+    <p id="siteDesc" class="muted">รวมแม่แบบและเอกสารออกแบบเกม พร้อมระบบค้นหาและแท็ก</p>
+    <div class="toolbar">
+      <input type="search" id="searchInput" placeholder="ค้นหา: ชื่อ, แท็ก, เนื้อหา…" aria-label="ค้นหาเอกสาร">
+    </div>
+    <div id="tagBar" class="tagbar"></div>
+  </section>
+
+  <section id="postList" class="grid"></section>
+
+  <section id="emptyState" class="empty hidden">
+    <h3>ไม่พบเอกสารที่ตรงกับคำค้นหา</h3>
+    <p class="muted">ลองเปลี่ยนคำค้นหรือเอาฟิลเตอร์แท็กออก</p>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <small>© <span id="year"></span> <span id="siteFooterTitle">GDD Blog</span>. จัดทำเป็นเว็บสถิติเพื่อใช้งานกับ GitHub Pages.</small>
+  </div>
+</footer>
+
+<script src="assets/js/main.js"></script>
+<script>
+  window.__PAGE__ = "index";
+</script>
+</body>
+</html>
