@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ติดต่อ • Dungeon Dungry</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Sans+Thai:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+  
+  <div class="container">
+    <header>
+      <div class="brand">
+        <div class="avatar">DD</div>
+        <div>
+          <div class="title">Dungeon Dungry</div>
+          <div class="subtitle">พอร์ตโฟลิโอ + เว็บไซต์หลายหน้า (Multi‑page)</div>
+        </div>
+      </div>
+      <div style="display:flex; gap:8px; align-items:center">
+        
+    <nav class="primary" aria-label="Main">
+      <a href="/mnt/data/portfolio-multipage/index.html">หน้าแรก</a>
+      <a href="/mnt/data/portfolio-multipage/blog.html">บล็อก</a>
+      <a href="/mnt/data/portfolio-multipage/projects.html">โปรเจกต์</a>
+      <a href="/mnt/data/portfolio-multipage/about.html">เกี่ยวกับ</a>
+      <a href="/mnt/data/portfolio-multipage/contact.html">ติดต่อ</a>
+    </nav>
+    
+        <button id="themeBtn" class="theme-toggle" title="สลับธีม">🌗</button>
+      </div>
+    </header>
+  
+  <article class="card grid-12">
+    <h1>ติดต่อ</h1>
+    <form id="contactForm" onsubmit="return submitContact(event)" class="grid" style="grid-template-columns:repeat(12,1fr); gap:12px">
+      <input class="card grid-4" id="name" placeholder="ชื่อของคุณ" required />
+      <input class="card grid-4" id="email" type="email" placeholder="อีเมล (สำหรับตอบกลับ)" required />
+      <input class="card grid-4" id="subject" placeholder="หัวเรื่อง" required />
+      <textarea class="card grid-12" id="message" placeholder="ข้อความ" required></textarea>
+      <div class="grid-12" style="display:flex; gap:10px; align-items:center">
+        <button class="link primary" type="submit">ส่งข้อความ</button>
+        <span id="contactStatus" class="muted"></span>
+      </div>
+    </form>
+    <script>
+      function submitContact(e){
+        e.preventDefault();
+        const name = document.getElementById('name').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const subject = document.getElementById('subject').value.trim();
+        const message = document.getElementById('message').value.trim();
+        const status = document.getElementById('contactStatus');
+        if(!name || !email || !subject || !message){ status.textContent = 'กรุณากรอกให้ครบ'; return false; }
+        const subj = encodeURIComponent(subject || `Portfolio contact from ${name}`);
+        const body = encodeURIComponent(`From: ${name} <${email}>\n\n${message}`);
+        window.location.href = `mailto:${CONFIG.contactTo}?subject=${subj}&body=${body}`;
+        status.textContent = 'กำลังเปิดอีเมลไคลเอนต์...';
+        return false;
+      }
+    </script>
+  </article>
+
+    <footer class="muted">© 2025 Dungeon Dungry — สร้างด้วย HTML/CSS/JS ธรรมดา • เหมาะกับ GitHub Pages</footer>
+  </div>
+  <script src="assets/common.js"></script>
+</body>
+</html>
