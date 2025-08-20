@@ -1,64 +1,89 @@
 <!DOCTYPE html>
-<html lang="th">
+<html lang="th" data-theme="dark">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Dungeon Dungry • Portfolio & Blog</title>
   <meta name="description" content="Single-file SPA: Blog document + GitHub Projects + About + Contact. Ready for GitHub Pages.">
+  <!-- Fonts for Thai readability -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Sans+Thai:wght@300;400;600;700&display=swap" rel="stylesheet">
   <style>
     :root{
-      --bg:#0b0d10; --card:#11151a; --muted:#9aa4b2; --text:#e6edf3; --border:#1f2937; --primary:#3b82f6; --ring:rgba(59,130,246,.35);
+      --bg:#0b0d10; --card:#0f1318; --muted:#9aa4b2; --text:#e6edf3; --border:#1f2937; --primary:#3b82f6; --ring:rgba(59,130,246,.35);
+      --accent:#60a5fa; --accent2:#34d399; --shadow:0 8px 24px rgba(0,0,0,.14);
     }
-    @media (prefers-color-scheme: light){
-      :root{ --bg:#f7fafc; --card:#ffffff; --muted:#475569; --text:#0b1220; --border:#e5e7eb; }
+    [data-theme="light"]{
+      --bg:#f7fafc; --card:#ffffff; --muted:#475569; --text:#0b1220; --border:#e5e7eb; --ring:rgba(59,130,246,.25);
+      --shadow:0 8px 22px rgba(2,6,23,.06);
     }
     *{box-sizing:border-box}
     html,body{height:100%}
-    body{margin:0; font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,"Helvetica Neue",Arial; background:var(--bg); color:var(--text)}
+    body{margin:0; font-family:"Noto Sans Thai", Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial; background:var(--bg); color:var(--text)}
     a{color:inherit}
 
-    .container{max-width:1100px; margin:0 auto; padding:20px}
+    .container{max-width:1160px; margin:0 auto; padding:20px}
     header{display:flex; flex-wrap:wrap; gap:14px; justify-content:space-between; align-items:center; padding:18px 0}
     .brand{display:flex; gap:12px; align-items:center}
-    .avatar{width:48px; height:48px; border-radius:999px; background:linear-gradient(135deg,#60a5fa,#34d399); display:grid; place-items:center; color:#0b1220; font-weight:800}
-    .title{font-size:1.4rem; font-weight:800}
+    .avatar{width:48px; height:48px; border-radius:999px; background:linear-gradient(135deg,var(--accent),var(--accent2)); display:grid; place-items:center; color:#0b1220; font-weight:800}
+    .title{font-size:1.5rem; font-weight:800; letter-spacing:.2px}
     .subtitle{color:var(--muted)}
 
-    nav{display:flex; gap:8px; padding:8px; background:var(--card); border:1px solid var(--border); border-radius:14px; justify-content:flex-start}
+    nav{display:flex; gap:8px; padding:10px 12px; background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,0)); border:1px solid var(--border); border-radius:14px; justify-content:flex-start; backdrop-filter: blur(6px)}
     .tab{padding:10px 14px; border-radius:10px; border:1px solid transparent; background:transparent; color:inherit; cursor:pointer}
     .tab.active{background:var(--primary); color:#fff}
+    .right-tools{display:flex; gap:8px; align-items:center}
+    .theme-toggle{border:1px solid var(--border); background:var(--card); border-radius:12px; padding:8px 10px; cursor:pointer}
 
     .toolbar{display:flex; gap:10px; flex-wrap:wrap}
-    .input{padding:10px 12px; border:1px solid var(--border); background:var(--card); color:inherit; border-radius:12px; min-width:240px; outline:none}
+    .input{padding:12px 14px; border:1px solid var(--border); background:var(--card); color:inherit; border-radius:12px; min-width:260px; outline:none}
     .input:focus{box-shadow:0 0 0 4px var(--ring); border-color:transparent}
     .btn{padding:10px 14px; border-radius:12px; border:1px solid var(--border); background:var(--card); color:inherit; cursor:pointer}
     .btn.primary{background:var(--primary); color:#fff; border-color:transparent}
 
+    #progress{position:fixed; inset:0 0 auto 0; height:3px; background:linear-gradient(90deg,var(--accent),var(--accent2)); width:0%; z-index:50}
+
     section[hidden]{display:none!important}
-    .grid{display:grid; grid-template-columns:repeat(12,1fr); gap:16px}
-    .card{grid-column:span 12; background:var(--card); border:1px solid var(--border); border-radius:18px; padding:16px; box-shadow:0 8px 24px rgba(0,0,0,.08)}
+    .grid{display:grid; grid-template-columns:repeat(12,1fr); gap:18px}
+    .card{grid-column:span 12; background:var(--card); border:1px solid var(--border); border-radius:18px; padding:18px; box-shadow:var(--shadow)}
     @media(min-width:640px){.grid-6{grid-column:span 6}}
     @media(min-width:1024px){.grid-4{grid-column:span 4} .grid-8{grid-column:span 8}}
-    h1,h2,h3{margin:.2rem 0 .6rem; scroll-margin-top:80px}
+
+    h1,h2,h3{margin:.3rem 0 .7rem; scroll-margin-top:90px}
+    h1{font-size:1.6rem}
+    h2{font-size:1.25rem}
+    h3{font-size:1.1rem}
     .muted{color:var(--muted)}
+
     .chips{display:flex; flex-wrap:wrap; gap:8px; margin:10px 0}
-    .chip{padding:6px 10px; border-radius:999px; background:rgba(148,163,184,.15); border:1px solid var(--border); color:var(--muted)}
+    .chip{padding:6px 10px; border-radius:999px; background:rgba(148,163,184,.12); border:1px solid var(--border); color:var(--muted)}
     .chip.active{outline:2px solid var(--primary); color:var(--text)}
+
     .meta{display:flex; gap:12px; align-items:center; flex-wrap:wrap}
     .spacer{flex:1}
     .link{padding:8px 12px; border-radius:10px; border:1px solid var(--border); text-decoration:none}
     .link.primary{background:var(--primary); color:#fff; border-color:transparent}
 
     /* Blog */
-    .prose p{line-height:1.8}
-    .toc{position:sticky; top:12px; text-align:left} /* ✅ ชิดซ้าย */
+    .prose{max-width:85ch}
+    .prose p{line-height:1.95}
+    .prose ul{padding-left:1.2rem}
+    .prose li{margin:.2rem 0}
+    .toc{position:sticky; top:12px; text-align:left}
     .toc ol{padding-left:18px; margin:8px 0 0}
     .toc a{display:block; padding:4px 0; text-decoration:none}
+    .callout{background:linear-gradient(180deg,rgba(96,165,250,.12),rgba(96,165,250,.06)); border:1px solid var(--border); border-left:4px solid var(--accent); padding:12px; border-radius:14px}
+    .kpis{display:grid; grid-template-columns:repeat(3,1fr); gap:10px}
+    .kpis .pill{padding:12px; border-radius:14px; background:rgba(148,163,184,.08); border:1px solid var(--border); text-align:center}
 
-    footer{margin:40px 0 12px; color:var(--muted)}
+    /* Projects */
+    .project-card{transition:transform .2s ease, box-shadow .2s ease}
+    .project-card:hover{transform:translateY(-4px); box-shadow:0 18px 34px rgba(0,0,0,.18)}
   </style>
 </head>
 <body>
+  <div id="progress"></div>
   <div class="container">
     <header>
       <div class="brand">
@@ -68,12 +93,15 @@
           <div class="subtitle">พอร์ตโฟลิโอ + บล็อกเอกสารเกม • SPA ไฟล์เดียว</div>
         </div>
       </div>
-      <nav aria-label="Main">
-        <button class="tab" data-route="#/blog">บล็อก</button>
-        <button class="tab" data-route="#/projects">โปรเจกต์</button>
-        <button class="tab" data-route="#/about">เกี่ยวกับ</button>
-        <button class="tab" data-route="#/contact">ติดต่อ</button>
-      </nav>
+      <div style="display:flex; gap:8px; align-items:center">
+        <nav aria-label="Main">
+          <button class="tab" data-route="#/blog">บล็อก</button>
+          <button class="tab" data-route="#/projects">โปรเจกต์</button>
+          <button class="tab" data-route="#/about">เกี่ยวกับ</button>
+          <button class="tab" data-route="#/contact">ติดต่อ</button>
+        </nav>
+        <button id="themeBtn" class="theme-toggle" title="สลับธีม">🌗</button>
+      </div>
     </header>
 
     <!-- BLOG -->
@@ -83,15 +111,21 @@
           <strong>สารบัญ</strong>
           <ol id="toc-list"></ol>
           <div style="margin-top:12px" class="muted">
-            <a class="link" href="Game Design Document 20082568.pdf" target="_blank" rel="noreferrer">เปิดดู PDF (ถ้ามีใน repo)</a>
+            <a class="link" href="Game Design Document 20082568.pdf" target="_blank" rel="noopener noreferrer">เปิดดู PDF (ถ้ามีใน repo)</a>
           </div>
         </aside>
         <article class="card grid-8 prose" id="blog-article">
-          <h1 id="overview">ภาพรวม (Overview)</h1>
-          <p>Dungeon Dungry คือเกมสำรวจดันเจี้ยน 3D แนว Action-Adventure ผู้เล่นสวมบทเป็นเชฟหนุ่ม “ไลออน” ออกเดินทางสู่ถ้ำ Elenia เพื่อตามหา “เนื้ออาร์ดัส” วัตถุดิบศักดิ์สิทธิ์เพื่อฟื้นฟูสมดุลธรรมชาติ เกมผสานการต่อสู้ เก็บวัตถุดิบ และระบบทำอาหาร เพื่อสร้างบัฟ/ฟื้นพลังและปลดล็อกความก้าวหน้า</p>
+          <div class="callout" style="margin-bottom:12px">
+            <strong>Elevator Pitch (ย่อ):</strong> “เป็นเชฟ…แล้วบุกดันเจี้ยน” – สำรวจ ถล่มมอนสเตอร์ ล่าบอส เก็บวัตถุดิบลับ ปรุงเมนูเพิ่มพลัง แล้วดิ่งสู่ชั้นลึกของ Elenia เพื่อหยุดคำสาปด้วย ‘เนื้ออาร์ดัส’
+          </div>
+          <div class="kpis">
+            <div class="pill"><div class="muted">แนวเกม</div><div><strong>Action‑Adventure</strong></div></div>
+            <div class="pill"><div class="muted">เอนจิน</div><div><strong>Unity (C#)</strong></div></div>
+            <div class="pill"><div class="muted">แพลตฟอร์ม</div><div><strong>Windows PC</strong></div></div>
+          </div>
 
-          <h2 id="elevator">Elevator Pitch</h2>
-          <p>“เป็นเชฟ…แล้วบุกดันเจี้ยน” – สำรวจ ถล่มมอนสเตอร์ ล่าบอส เก็บวัตถุดิบลับ ปรุงเมนูเพิ่มพลัง แล้วดิ่งสู่ชั้นลึกของ Elenia เพื่อหยุดคำสาปด้วย ‘เนื้ออาร์ดัส’</p>
+          <h1 id="overview" style="margin-top:14px">ภาพรวม (Overview)</h1>
+          <p>Dungeon Dungry คือเกมสำรวจดันเจี้ยน 3D แนว Action‑Adventure ผู้เล่นสวมบทเป็นเชฟหนุ่ม “ไลออน” ออกเดินทางสู่ถ้ำ Elenia เพื่อตามหา “เนื้ออาร์ดัส” วัตถุดิบศักดิ์สิทธิ์เพื่อฟื้นฟูสมดุลธรรมชาติ เกมผสานการต่อสู้ เก็บวัตถุดิบ และระบบทำอาหาร เพื่อสร้างบัฟ/ฟื้นพลังและปลดล็อกความก้าวหน้า</p>
 
           <h2 id="theme-setting">Theme & Setting</h2>
           <ul>
@@ -172,9 +206,9 @@
     <!-- PROJECTS -->
     <section id="page-projects" hidden>
       <div class="toolbar" style="margin:6px 0 12px">
-        <input class="input" id="q" placeholder="ค้นหาโปรเจ็กต์... (ชื่อ/คำอธิบาย/แท็ก)" aria-label="Search projects" />
+        <input class="input" id="q" placeholder="ค้นหาโปรเจกต์... (ชื่อ/คำอธิบาย/แท็ก)" aria-label="Search projects" />
         <button class="btn" id="toggleSource">ข้อมูล: Local</button>
-        <a id="githubLink" class="btn primary" href="https://github.com" target="_blank" rel="noreferrer">ดูบน GitHub</a>
+        <a id="githubLink" class="btn primary" href="https://github.com" target="_blank" rel="noopener noreferrer">ดูบน GitHub</a>
       </div>
       <div class="chips" id="chips"></div>
       <div class="grid" id="grid"></div>
@@ -186,7 +220,7 @@
       <div class="grid">
         <article class="card grid-8">
           <h1>เกี่ยวกับ</h1>
-          <p>เกม/งานวิจัยแนว Action-Adventure + Adaptive Difficulty โดยใช้ Unity และแนวทาง ML/Rule-based Hybrid</p>
+          <p>เกม/งานวิจัยแนว Action‑Adventure + Adaptive Difficulty โดยใช้ Unity และแนวทาง ML/Rule‑based Hybrid</p>
           <ul>
             <li>เอนจิน: Unity (C#)</li>
             <li>โฟกัส: เกมขนาดเล็กคุณภาพดี ปรับแต่งได้ง่าย เปิดเป็นโอเพนซอร์สส่วนหนึ่ง</li>
@@ -195,7 +229,7 @@
         <aside class="card grid-4">
           <h2>ไฟล์ที่เกี่ยวข้อง</h2>
           <ul>
-            <li><a class="link" href="Game Design Document 20082568.pdf" target="_blank">Game Design Document (PDF)</a></li>
+            <li><a class="link" href="Game Design Document 20082568.pdf" target="_blank" rel="noopener noreferrer">Game Design Document (PDF)</a></li>
           </ul>
         </aside>
       </div>
@@ -217,8 +251,8 @@
       </article>
     </section>
 
-    <footer class="muted">
-      สร้างด้วย ❤ และ HTML/CSS/JS ธรรมดา • วางไฟล์นี้เป็น <code>index.html</code> ที่รากของ repo • สลับหน้าได้ผ่าน URL hash
+    <footer class="muted" style="margin-top:28px">
+      สร้างด้วย ❤ และ HTML/CSS/JS ธรรมดา • วางไฟล์นี้เป็น <code>index.html</code> ที่รากของ repo • สลับหน้าได้ผ่าน URL hash • มี Dark/Light + แถบความคืบหน้าอ่านบทความ
     </footer>
   </div>
 
@@ -231,6 +265,24 @@
       contactTo: "s6530611018@phuket.psu.ac.th",
     };
 
+    // ===== Theme Toggle =====
+    const themeBtn = document.getElementById('themeBtn');
+    function applyTheme(theme){ document.documentElement.setAttribute('data-theme', theme); localStorage.setItem('theme', theme); }
+    const storedTheme = localStorage.getItem('theme');
+    if(storedTheme) applyTheme(storedTheme);
+    themeBtn.addEventListener('click', ()=>{ const next = (document.documentElement.getAttribute('data-theme') === 'light') ? 'dark' : 'light'; applyTheme(next); });
+
+    // ===== Reading Progress (Blog) =====
+    const progressEl = document.getElementById('progress');
+    function updateProgress(){
+      const article = document.getElementById('blog-article'); if(!article) return;
+      const rect = article.getBoundingClientRect();
+      const total = article.scrollHeight - window.innerHeight;
+      const scrolled = Math.min(Math.max(window.scrollY - (article.offsetTop - 12), 0), total);
+      const pct = total > 0 ? (scrolled / total) * 100 : 0; progressEl.style.width = pct + '%';
+    }
+    window.addEventListener('scroll', updateProgress, {passive:true});
+
     // ===== SPA Router =====
     const routes = {
       '#/blog': 'page-blog',
@@ -239,9 +291,7 @@
       '#/contact': 'page-contact',
     };
     function setActiveTab(hash){
-      document.querySelectorAll('nav .tab').forEach(btn=>{
-        btn.classList.toggle('active', btn.dataset.route===hash);
-      });
+      document.querySelectorAll('nav .tab').forEach(btn=>{ btn.classList.toggle('active', btn.dataset.route===hash); });
     }
     function router(){
       const hash = window.location.hash || '#/blog';
@@ -253,21 +303,31 @@
         '#/blog':'บล็อก • Dungeon Dungry', '#/projects':'โปรเจกต์ • Dungeon Dungry',
         '#/about':'เกี่ยวกับ • Dungeon Dungry', '#/contact':'ติดต่อ • Dungeon Dungry'
       }[hash] || 'Dungeon Dungry';
+      updateProgress();
     }
     window.addEventListener('hashchange', ()=>{ router(); if(location.hash==="#/blog") buildTOC(); });
     document.querySelectorAll('nav .tab').forEach(b=> b.addEventListener('click', ()=>{ location.hash = b.dataset.route; }));
 
-    // ===== Blog TOC =====
+    // ===== Blog TOC (H2/H3 nesting) =====
     function buildTOC(){
       const article = document.getElementById('blog-article');
       const tocList = document.getElementById('toc-list');
       if(!article || !tocList) return;
       tocList.innerHTML = '';
-      article.querySelectorAll('h1[id],h2[id]').forEach(h=>{
-        const li = document.createElement('li');
-        const a = document.createElement('a');
-        a.href = `#${h.id}`; a.textContent = h.textContent; a.onclick = ()=> setTimeout(()=> window.scrollBy(0,-10), 0);
-        li.appendChild(a); tocList.appendChild(li);
+      let currentH2LI = null; let currentSubOL = null;
+      article.querySelectorAll('h2[id],h3[id]').forEach(h=>{
+        if(h.tagName==='H2'){
+          currentH2LI = document.createElement('li');
+          const a = document.createElement('a'); a.href = `#${h.id}`; a.textContent = h.textContent; a.onclick = ()=> setTimeout(()=> window.scrollBy(0,-10), 0);
+          currentH2LI.appendChild(a); tocList.appendChild(currentH2LI);
+          currentSubOL = null;
+        } else {
+          if(!currentH2LI){ currentH2LI = document.createElement('li'); tocList.appendChild(currentH2LI); }
+          if(!currentSubOL){ currentSubOL = document.createElement('ol'); currentSubOL.style.paddingLeft = '16px'; currentH2LI.appendChild(currentSubOL); }
+          const li = document.createElement('li');
+          const a = document.createElement('a'); a.href = `#${h.id}`; a.textContent = h.textContent; a.onclick = ()=> setTimeout(()=> window.scrollBy(0,-10), 0);
+          li.appendChild(a); currentSubOL.appendChild(li);
+        }
       });
     }
 
@@ -308,18 +368,21 @@
       elEmpty.hidden = filtered.length !== 0;
       filtered.forEach(p=>{
         const card = document.createElement('div');
-        card.className = 'card grid-4';
+        card.className = 'card grid-4 project-card';
         card.innerHTML = `
-          <h3>${p.name}</h3>
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px">
+            <div style="width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent2));"></div>
+            <h3 style="margin:0">${p.name}</h3>
+          </div>
           <p class="muted">${p.description || '—'}</p>
-          <div class="meta">
+          <div class="meta" style="margin-top:8px">
             <span class="muted">⭐ ${p.stars||0}</span>
             <span class="muted">⏱ ${p.updated_at ? formatDate(p.updated_at) : '—'}</span>
             <span class="spacer"></span>
-            <a class="link" href="${p.repo}" target="_blank" rel="noreferrer">Repo</a>
-            ${(p.demo||p.homepage) ? `<a class="link primary" href="${p.demo||p.homepage}" target="_blank" rel="noreferrer">Demo</a>` : ''}
+            <a class="link" href="${p.repo}" target="_blank" rel="noopener noreferrer">Repo</a>
+            ${(p.demo||p.homepage) ? `<a class=\"link primary\" href=\"${p.demo||p.homepage}\" target=\"_blank\" rel=\"noopener noreferrer\">Demo</a>` : ''}
           </div>
-          <div class="chips" style="margin-top:10px">${(p.tags||[]).map(t=>`<span class="chip">${t}</span>`).join('')}</div>
+          <div class="chips" style="margin-top:10px">${(p.tags||[]).map(t=>`<span class=\"chip\">${t}</span>`).join('')}</div>
         `;
         elGrid.appendChild(card);
       });
@@ -352,7 +415,9 @@
       const status = document.getElementById('contactStatus');
       if(!name || !email || !message){ status.textContent = 'กรุณากรอกให้ครบ'; return false; }
       const subject = encodeURIComponent(`Portfolio contact from ${name}`);
-      const body = encodeURIComponent(`From: ${name} <${email}>\n\n${message}`);
+      const body = encodeURIComponent(`From: ${name} <${email}>
+
+${message}`);
       window.location.href = `mailto:${CONFIG.contactTo}?subject=${subject}&body=${body}`;
       status.textContent = 'กำลังเปิดอีเมลไคลเอนต์...';
       return false;
@@ -363,6 +428,7 @@
     async function bootstrap(){
       router();
       buildTOC();
+      updateProgress();
       // Projects data (prefer GitHub; fallback to local)
       const data = (CONFIG.useGitHubAPI && CONFIG.username)
         ? await loadFromGitHub(CONFIG.username).catch(()=>localProjects)
