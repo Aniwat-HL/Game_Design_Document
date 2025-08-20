@@ -1,16 +1,9 @@
 
-/* Minimal static blog engine for GDD
- * - Loads /data/posts.json
- * - Index: search + tag filter
- * - Post: renders Markdown, builds sticky ToC (H2–H4), reading time
- * - Dark mode toggle (persisted)
- */
-
 const CONFIG = {
   siteTitle: "GDD Blog",
   siteDescription: "คลังเอกสาร Game Design Document (GDD) สำหรับโปรเจกต์ของคุณ",
-  githubRepoUrl: "", // ใส่ลิงก์ repo (เช่น https://github.com/yourname/gdd-blog) เพื่อให้ปุ่ม 'ดูบน GitHub' ทำงาน
-  readingWpm: 220
+  githubRepoUrl: "",
+  readingWpm: 230
 };
 
 const $ = (sel, ctx=document) => ctx.querySelector(sel);
@@ -40,58 +33,100 @@ async function loadJSON(path){
   return await res.json();
 }
 
-// Very small Markdown → HTML converter (H1–H4, bold/italic/inline code, lists, code block, links, images, tables basic)
+// Markdown parser (headings, lists, blockquote, code fence, inline formats)
 function mdToHtml(md){
-  // Escape HTML
+  // Escape basic HTML
   md = md.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 
-  // Code blocks ``` ```
+  // Code fences
   md = md.replace(/```([\s\S]*?)```/g, (m, code) => `<pre><code>${code.trim()}</code></pre>`);
 
-  // Headers #### to #
+  // Convert CRLF to LF
+  md = md.replace(/\r\n/g, '\n');
+
+  // Normalize bullets from • or – to '-'
+  md = md.replace(/^\s*[•–]\s+/gm, '- ');
+
+  // Headings
   md = md.replace(/^####\s?(.*)$/gm, '<h4>$1</h4>')
          .replace(/^###\s?(.*)$/gm, '<h3>$1</h3>')
          .replace(/^##\s?(.*)$/gm, '<h2>$1</h2>')
          .replace(/^#\s?(.*)$/gm, '<h1>$1</h1>');
 
-  // Bold/Italic/Inline code
-  md = md.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-         .replace(/\*(.+?)\*/g, '<em>$1</em>')
-         .replace(/`(.+?)`/g, '<code>$1</code>');
-
-  // Images ![alt](src)
-  md = md.replace(/!\[(.*?)\]\((.*?)\)/g, '<p><img alt="$1" src="$2"></p>');
-
-  // Links [text](url)
-  md = md.replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
-
   // Blockquotes
   md = md.replace(/^\>\s?(.*)$/gm, '<blockquote>$1</blockquote>');
 
-  // Unordered lists
-  md = md.replace(/(^|\n)\s*-\s+(.*)/g, (m, p1, item) => `${p1}<li>${item}</li>`);
-  md = md.replace(/(<li>[\s\S]*?<\/li>)/g, '<ul>$1</ul>');
-  md = md.replace(/<\/ul>\s*<ul>/g, ''); // merge adjacent uls
+  // Build lists by scanning lines to group consecutive list items
+  const lines = md.split('\n');
+  let html = '';
+  let inUL = false, inOL = false;
 
-  // Ordered lists
-  md = md.replace(/(^|\n)\s*\d+\.\s+(.*)/g, (m, p1, item) => `${p1}<li>${item}</li>`);
-  md = md.replace(/(<li>[\s\S]*?<\/li>)/g, (m) => m); // already wrapped above
-  md = md.replace(/(<li>[\s\S]*?<\/li>)(?!(\s*<\/?(ul|ol)>))/g, '$1'); // no-op safeguard
-  // Convert sequences of <li> ... to <ol>
-  md = md.replace(/(?:^|\n)(<li>[\s\S]*?<\/li>)(?:\n(?!<h\d|<p|<blockquote|<pre|<ul|<ol).*)*/g, (block) => {
-    // This naive approach can over-wrap. Keep simple.
-    return block;
-  });
-  // Paragraphs (lines separated by blank line)
-  md = md.replace(/^(?!<h\d|<ul>|<li>|<blockquote>|<pre>|<img|<ol>|<\/li>|<\/ul>|<\/ol>)(.+)$/gm, '<p>$1</p>');
+  function closeLists(){
+    if(inUL){ html += '</ul>'; inUL = false; }
+    if(inOL){ html += '</ol>'; inOL = false; }
+  }
 
-  return md;
+  for(let i=0;i<lines.length;i++){
+    let line = lines[i];
+
+    // Ordered list item (1. text) or (1) text
+    if(/^(\s*\d+)[\.\)]\s+/.test(line)){
+      const item = line.replace(/^(\s*\d+)[\.\)]\s+/, '');
+      if(!inOL){ closeLists(); html += '<ol>'; inOL = true; }
+      html += `<li>${item}</li>`;
+      continue;
+    }
+
+    // Unordered list item (- text or * text)
+    if(/^\s*[-*]\s+/.test(line)){
+      const item = line.replace(/^\s*[-*]\s+/, '');
+      if(!inUL){ closeLists(); html += '<ul>'; inUL = true; }
+      html += `<li>${item}</li>`;
+      continue;
+    }
+
+    // If blank line -> close any lists and add spacing
+    if(/^\s*$/.test(line)){
+      closeLists();
+      html += '\n';
+      continue;
+    }
+
+    // Already converted block elements?
+    if(/^<h[1-4]>/.test(line) || /^<blockquote>/.test(line) || /^<pre>/.test(line)){
+      closeLists();
+      html += line;
+      continue;
+    }
+
+    // Images ![alt](src)
+    if(/!\[(.*?)\]\((.*?)\)/.test(line)){
+      line = line.replace(/!\[(.*?)\]\((.*?)\)/g, '<p><img alt="$1" src="$2"></p>');
+      closeLists();
+      html += line;
+      continue;
+    }
+
+    // Links [text](url) + inline bold/italic/code
+    line = line
+      .replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>')
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.+?)\*/g, '<em>$1</em>')
+      .replace(/`(.+?)`/g, '<code>$1</code>');
+
+    // Paragraph
+    closeLists();
+    if(line.trim().length){
+      html += `<p>${line}</p>`;
+    }
+  }
+  closeLists();
+  return html;
 }
 
 function buildTOC(container, tocEl){
   const headers = $$('h2, h3, h4', container);
   if(headers.length === 0){ tocEl.innerHTML = '<div class="muted">ไม่มีหัวข้อ</div>'; return; }
-
   const ul = document.createElement('div');
   headers.forEach((h, idx)=>{
     if(!h.id){ h.id = 'h-' + (idx+1); }
@@ -105,7 +140,7 @@ function buildTOC(container, tocEl){
   tocEl.innerHTML = '';
   tocEl.appendChild(ul);
 
-  // Highlight active heading on scroll
+  // Scroll spy
   const observer = new IntersectionObserver((entries)=>{
     entries.forEach((entry)=>{
       const id = entry.target.id;
@@ -131,8 +166,32 @@ function uniqueTags(posts){
   return Array.from(s).sort((a,b)=>a.localeCompare(b,'th'));
 }
 
+function setupProgressAndTop(){
+  // progress bar
+  const bar = document.createElement('div');
+  bar.id = 'progress';
+  document.body.appendChild(bar);
+
+  // back to top
+  const topBtn = document.createElement('button');
+  topBtn.id = 'backToTop';
+  topBtn.textContent = '↑';
+  topBtn.title = 'กลับขึ้นบน';
+  topBtn.onclick = ()=> window.scrollTo({top:0, behavior:'smooth'});
+  document.body.appendChild(topBtn);
+
+  const onScroll = () => {
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const p = Math.max(0, Math.min(1, docHeight ? scrollTop / docHeight : 0));
+    bar.style.width = (p*100) + '%';
+    if(scrollTop > 600) topBtn.classList.add('show'); else topBtn.classList.remove('show');
+  };
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+}
+
 function renderIndex(data){
-  // Header content
   $('#siteTitle').textContent = CONFIG.siteTitle;
   $('#siteFooterTitle').textContent = CONFIG.siteTitle;
   $('#siteHeading').textContent = data?.site?.title || CONFIG.siteTitle;
@@ -146,7 +205,6 @@ function renderIndex(data){
   let posts = (data.posts||[]).slice().sort((a,b)=> new Date(b.date) - new Date(a.date));
   const allTags = uniqueTags(posts);
 
-  // Render tag bar
   const tagBar = $('#tagBar');
   const active = new Set();
   function refresh(){
@@ -175,7 +233,6 @@ function renderIndex(data){
         listEl.appendChild(card);
       });
     }
-    // Render chips
     tagBar.innerHTML = '';
     allTags.forEach(t => {
       const chip = document.createElement('button');
@@ -188,6 +245,25 @@ function renderIndex(data){
 
   $('#searchInput').addEventListener('input', refresh);
   refresh();
+}
+
+function buildPageJump(container){
+  const h2s = $$('h2', container);
+  if(!h2s.length) return;
+  const wrap = document.createElement('div');
+  wrap.className = 'page-jump';
+  h2s.forEach((h, idx) => {
+    if(!h.id){ h.id = 'h-' + (idx+1); }
+    const btn = document.createElement('button');
+    btn.className = 'chip';
+    const label = h.textContent.trim().slice(0, 32);
+    btn.textContent = label || ('ส่วนที่ ' + (idx+1));
+    btn.title = h.textContent.trim();
+    btn.onclick = (e)=>{ e.preventDefault(); h.scrollIntoView({behavior:'smooth', block:'start'}); history.replaceState(null, '', '#'+h.id); };
+    wrap.appendChild(btn);
+  });
+  const postHead = $('.post-head');
+  postHead && postHead.after(wrap);
 }
 
 function renderPost(data){
@@ -211,11 +287,25 @@ function renderPost(data){
   const contentEl = $('#postContent');
   contentEl.innerHTML = html;
 
-  // Reading time
   $('#readingTime').textContent = readingTimeFromText(contentEl.textContent);
 
-  // Build ToC
   buildTOC(contentEl, $('#toc'));
+  buildPageJump(contentEl);
+  setupProgressAndTop();
+
+  // Add anchor links to headings
+  $$('h2, h3, h4', contentEl).forEach(h => {
+    if(!h.id){
+      h.id = 'h-' + Math.random().toString(36).slice(2,8);
+    }
+    const a = document.createElement('a');
+    a.href = '#'+h.id;
+    a.textContent = '¶';
+    a.style.marginLeft = '6px';
+    a.style.textDecoration = 'none';
+    a.title = 'ลิงก์ไปยังหัวข้อนี้';
+    h.appendChild(a);
+  });
 }
 
 // Boot
@@ -224,7 +314,6 @@ document.addEventListener('click', (e)=>{
   if(e.target && e.target.id === 'themeToggle'){ toggleTheme(); }
 });
 
-// Load data and render
 loadJSON('data/posts.json')
   .then(data => {
     if(window.__PAGE__ === 'post') renderPost(data);
