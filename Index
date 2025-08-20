@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>My Projects • GitHub Portfolio</title>
+  <meta name="description" content="A simple, responsive portfolio to showcase GitHub projects." />
+  <style>
+    :root{
+      --bg: #0b0d10;
+      --card: #12161b;
+      --muted: #9aa4b2;
+      --text: #e6edf3;
+      --primary: #3b82f6;
+      --ring: rgba(59,130,246,.35);
+      --border: #20262d;
+      --chip: #1b2330;
+    }
+    @media (prefers-color-scheme: light){
+      :root{
+        --bg:#f6f8fa; --card:#ffffff; --muted:#475569; --text:#0b1220; --border:#e5e7eb; --chip:#eef2ff;
+      }
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0; font-family: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,"Helvetica Neue",Arial,"Apple Color Emoji","Segoe UI Emoji"; background:var(--bg); color:var(--text)}
+    .container{max-width:1100px; margin:0 auto; padding:24px}
+    header{display:flex; flex-wrap:wrap; align-items:center; gap:12px; justify-content:space-between; padding:12px 0}
+    .brand{display:flex; align-items:center; gap:12px}
+    .avatar{width:44px; height:44px; border-radius:999px; background:linear-gradient(135deg,#60a5fa,#34d399); display:grid; place-items:center; color:#0b1220; font-weight:700}
+    .title{font-size:1.25rem; font-weight:700}
+    .muted{color:var(--muted)}
+    .toolbar{display:flex; gap:10px; flex-wrap:wrap}
+    input[type="search"]{padding:10px 12px; border-radius:12px; border:1px solid var(--border); background:var(--card); color:var(--text); outline:none; min-width:240px}
+    input[type="search"]:focus{box-shadow:0 0 0 4px var(--ring); border-color:transparent}
+    .btn{padding:10px 14px; border-radius:12px; border:1px solid var(--border); background:var(--card); color:var(--text); cursor:pointer}
+    .btn.primary{background:var(--primary); border-color:transparent; color:white}
+    .chips{display:flex; flex-wrap:wrap; gap:8px; margin:14px 0}
+    .chip{padding:6px 10px; border-radius:999px; background:var(--chip); color:var(--muted); border:1px solid var(--border); cursor:pointer; user-select:none}
+    .chip.active{outline:2px solid var(--primary); color:var(--text)}
+    .grid{display:grid; grid-template-columns:repeat(12,1fr); gap:16px}
+    .card{grid-column: span 12; background:var(--card); border:1px solid var(--border); border-radius:18px; padding:16px; display:flex; flex-direction:column; gap:10px}
+    @media(min-width:640px){.card{grid-column: span 6}}
+    @media(min-width:1024px){.card{grid-column: span 4}}
+    .card h3{margin:0; font-size:1.05rem}
+    .desc{color:var(--muted); margin:0}
+    .meta{display:flex; gap:12px; align-items:center; flex-wrap:wrap}
+    .badge{display:inline-flex; align-items:center; gap:6px; font-size:.9rem; color:var(--muted)}
+    .spreader{flex:1}
+    .links{display:flex; gap:8px; flex-wrap:wrap}
+    .link{padding:8px 12px; border-radius:10px; border:1px solid var(--border); color:var(--text); text-decoration:none}
+    .link.primary{background:var(--primary); border-color:transparent; color:white}
+    footer{margin:40px 0 12px; color:var(--muted); font-size:.95rem}
+    .empty{border:1px dashed var(--border); background:transparent; text-align:center; padding:24px; border-radius:16px}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <div class="avatar" id="avatar">GH</div>
+        <div>
+          <div class="title" id="ownerName">My GitHub Projects</div>
+          <div class="muted" id="ownerSub">แสดงผลงานบน GitHub • ค้นหา/กรองตามแท็ก</div>
+        </div>
+      </div>
+      <div class="toolbar">
+        <input type="search" id="q" placeholder="ค้นหาโปรเจ็กต์... (ชื่อ/คำอธิบาย/แท็ก)" aria-label="Search projects" />
+        <button class="btn" id="toggleSource">ข้อมูล: Local</button>
+        <a id="githubLink" class="btn primary" href="https://github.com" target="_blank" rel="noreferrer">ดูบน GitHub</a>
+      </div>
+    </header>
+
+    <section class="chips" id="chips"></section>
+
+    <section class="grid" id="grid"></section>
+
+    <div class="empty muted" id="empty" hidden>ไม่พบโปรเจ็กต์ที่ตรงกับการค้นหา/แท็ก</div>
+
+    <footer>
+      สร้างด้วย ❤ และ HTML/CSS/JS ธรรมดา • นำไฟล์นี้ไปวางใน <code>gh-pages</code> หรือเปิดใช้ GitHub Pages จากสาขา <code>main</code>
+    </footer>
+  </div>
+
+  <script>
+    // === CONFIG ===
+    const CONFIG = {
+      // 📌 ใส่ GitHub username ถ้าต้องการดึงข้อมูลจริงจาก API
+      username: "",
+      // ตั้งค่า true เพื่อดึงรายชื่อ repo จาก GitHub API
+      useGitHubAPI: false,
+      // กำหนดแท็กที่จะใช้เป็นชิปเริ่มต้น (ถ้าว่างจะรวบรวมจากโปรเจ็กต์)
+      defaultTags: ["web", "unity", "ml", "game", "tool"],
+    };
+
+    // โปรเจกต์เริ่มต้น (แก้ไขได้ตามต้องการ)
+    const localProjects = [
+      {
+        name: "adaptive-hero-progression",
+        description: "ระบบปรับระดับความยากอัตโนมัติด้วย ML สำหรับเกม Unity",
+        tags: ["unity", "ml", "game"],
+        repo: "https://github.com/yourname/adaptive-hero-progression",
+        demo: "",
+        homepage: "",
+        stars: 0, updated_at: "2025-08-15",
+      },
+      {
+        name: "werewolf-card-designer",
+        description: "เว็บเครื่องมือออกแบบการ์ดเกม Werewolf สไตล์มินิมอล",
+        tags: ["web", "tool"],
+        repo: "https://github.com/yourname/werewolf-card-designer",
+        demo: "https://yourname.github.io/werewolf-card-designer/",
+        homepage: "",
+        stars: 0, updated_at: "2025-07-20",
+      },
+      {
+        name: "pixel-sticker-studio",
+        description: "สตูดิโอสร้างสติ๊กเกอร์พิกเซลอาร์ต พร้อมส่งออกชุด 4x4",
+        tags: ["web", "art", "tool"],
+        repo: "https://github.com/yourname/pixel-sticker-studio",
+        demo: "",
+        homepage: "",
+        stars: 0, updated_at: "2025-06-01",
+      }
+    ];
+
+    let state = {
+      source: CONFIG.useGitHubAPI ? 'github' : 'local',
+      projects: [],
+      query: '',
+      activeTag: 'all',
+      allTags: new Set(),
+    };
+
+    const elGrid = document.getElementById('grid');
+    const elChips = document.getElementById('chips');
+    const elQ = document.getElementById('q');
+    const elEmpty = document.getElementById('empty');
+    const elToggle = document.getElementById('toggleSource');
+    const elOwner = document.getElementById('ownerName');
+    const elAvatar = document.getElementById('avatar');
+    const elLink = document.getElementById('githubLink');
+
+    function initials(name){
+      return (name||'GH').split(/\s+/).map(s=>s[0]).join('').slice(0,2).toUpperCase();
+    }
+
+    function setOwner(name, url){
+      elOwner.textContent = name ? `${name}'s Projects` : 'My GitHub Projects';
+      elAvatar.textContent = initials(name || 'GH');
+      if(url) elLink.href = url;
+    }
+
+    function renderChips(){
+      const tags = ['all', ...Array.from(state.allTags).sort()];
+      elChips.innerHTML = '';
+      tags.forEach(tag => {
+        const c = document.createElement('button');
+        c.className = 'chip' + (state.activeTag===tag ? ' active' : '');
+        c.textContent = tag;
+        c.onclick = () => {state.activeTag = tag; render();};
+        elChips.appendChild(c);
+      });
+    }
+
+    function projectMatches(p){
+      const q = state.query.trim().toLowerCase();
+      const matchQ = !q || [p.name, p.description, (p.tags||[]).join(' ')].join(' ').toLowerCase().includes(q);
+      const matchTag = state.activeTag==='all' || (p.tags||[]).includes(state.activeTag);
+      return matchQ && matchTag;
+    }
+
+    function formatDate(d){
+      try{ return new Date(d).toLocaleDateString(undefined,{year:'numeric',month:'short',day:'2-digit'});}catch{ return d }
+    }
+
+    function render(){
+      const filtered = state.projects.filter(projectMatches);
+      elGrid.innerHTML = '';
+      elEmpty.hidden = filtered.length !== 0;
+      filtered.forEach(p => {
+        const card = document.createElement('article');
+        card.className = 'card';
+        card.innerHTML = `
+          <h3>${p.name}</h3>
+          <p class="desc">${p.description || '—'}</p>
+          <div class="meta">
+            <span class="badge" title="Stars">⭐ ${p.stars||0}</span>
+            <span class="badge" title="Updated">⏱ ${p.updated_at ? formatDate(p.updated_at) : '—'}</span>
+            <span class="spreader"></span>
+            <div class="links">
+              ${p.repo ? `<a class="link" href="${p.repo}" target="_blank" rel="noreferrer">Repo</a>` : ''}
+              ${p.demo || p.homepage ? `<a class="link primary" href="${p.demo||p.homepage}" target="_blank" rel="noreferrer">Demo</a>` : ''}
+            </div>
+          </div>
+          <div class="chips">${(p.tags||[]).map(t=>`<span class="chip">${t}</span>`).join('')}</div>
+        `;
+        elGrid.appendChild(card);
+      });
+    }
+
+    async function loadFromGitHub(username){
+      const url = `https://api.github.com/users/${encodeURIComponent(username)}/repos?per_page=100&sort=updated`;
+      const res = await fetch(url, { headers: { 'Accept': 'application/vnd.github+json' } });
+      if(!res.ok) throw new Error('GitHub API error');
+      const repos = await res.json();
+      return repos
+        .filter(r => !r.fork)
+        .map(r => ({
+          name: r.name,
+          description: r.description,
+          tags: (r.topics && r.topics.length ? r.topics : []),
+          repo: r.html_url,
+          demo: r.homepage,
+          homepage: r.homepage,
+          stars: r.stargazers_count,
+          updated_at: r.pushed_at || r.updated_at,
+        }));
+    }
+
+    function ingest(projects){
+      state.projects = projects;
+      state.allTags = new Set(CONFIG.defaultTags || []);
+      projects.forEach(p => (p.tags||[]).forEach(t => state.allTags.add(t)));
+      renderChips();
+      render();
+    }
+
+    async function bootstrap(){
+      elQ.addEventListener('input', (e)=>{ state.query = e.target.value; render(); });
+      elToggle.addEventListener('click', async ()=>{
+        state.source = state.source==='local' ? 'github' : 'local';
+        elToggle.textContent = `ข้อมูล: ${state.source==='local'?'Local':'GitHub'}`;
+        if(state.source==='github'){
+          if(!CONFIG.username){
+            alert('กรุณาตั้งค่า CONFIG.username เป็น GitHub username ของคุณ');
+            state.source='local'; elToggle.textContent = 'ข้อมูล: Local'; return;
+          }
+          try{
+            setOwner(CONFIG.username, `https://github.com/${CONFIG.username}`);
+            const data = await loadFromGitHub(CONFIG.username);
+            ingest(data);
+          }catch(err){
+            console.error(err); alert('โหลดข้อมูลจาก GitHub ไม่สำเร็จ จะใช้ข้อมูล Local แทน');
+            setOwner('My GitHub', 'https://github.com');
+            ingest(localProjects);
+          }
+        } else {
+          setOwner('My GitHub', 'https://github.com');
+          ingest(localProjects);
+        }
+      });
+
+      // initial load
+      setOwner('My GitHub', 'https://github.com');
+      ingest(localProjects);
+      if(CONFIG.useGitHubAPI && CONFIG.username){
+        elToggle.click();
+      }
+    }
+
+    bootstrap();
+  </script>
+</body>
+</html>
