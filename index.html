@@ -3,173 +3,236 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>My Projects • GitHub Portfolio</title>
-  <meta name="description" content="Responsive portfolio to showcase GitHub projects with About & Contact pages (single-file SPA)." />
+  <title>Dungeon Dungry • Portfolio & Blog</title>
+  <meta name="description" content="Single-file portfolio + blog for Dungeon Dungry with GitHub projects, About, Contact, and a long-form document page.">
   <style>
     :root{
-      --bg: #0b0d10; --card:#12161b; --muted:#9aa4b2; --text:#e6edf3;
-      --primary:#3b82f6; --ring: rgba(59,130,246,.35); --border:#20262d; --chip:#1b2330;
-      --ok:#22c55e; --warn:#f59e0b; --err:#ef4444;
+      --bg:#0b0d10; --card:#11151a; --muted:#9aa4b2; --text:#e6edf3; --border:#1f2937; --primary:#3b82f6; --ring:rgba(59,130,246,.35);
     }
     @media (prefers-color-scheme: light){
-      :root{ --bg:#f6f8fa; --card:#fff; --muted:#475569; --text:#0b1220; --border:#e5e7eb; --chip:#eef2ff; }
+      :root{ --bg:#f7fafc; --card:#ffffff; --muted:#475569; --text:#0b1220; --border:#e5e7eb; }
     }
     *{box-sizing:border-box}
     html,body{height:100%}
-    body{margin:0; font-family: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,"Helvetica Neue",Arial; background:var(--bg); color:var(--text)}
+    body{margin:0; font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,"Helvetica Neue",Arial; background:var(--bg); color:var(--text)}
     a{color:inherit}
-    .container{max-width:1100px; margin:0 auto; padding:24px}
-    header{display:flex; flex-wrap:wrap; align-items:center; gap:14px; justify-content:space-between; padding:12px 0}
-    .brand{display:flex; align-items:center; gap:12px}
-    .avatar{width:44px; height:44px; border-radius:999px; background:linear-gradient(135deg,#60a5fa,#34d399); display:grid; place-items:center; color:#0b1220; font-weight:700}
-    .title{font-size:1.25rem; font-weight:700}
-    .muted{color:var(--muted)}
-    nav{display:flex; gap:6px; padding:6px; background:var(--card); border:1px solid var(--border); border-radius:14px}
-    .tab{padding:10px 12px; border-radius:10px; border:1px solid transparent; cursor:pointer}
+
+    .container{max-width:1100px; margin:0 auto; padding:20px}
+    header{display:flex; flex-wrap:wrap; gap:14px; justify-content:space-between; align-items:center; padding:18px 0}
+    .brand{display:flex; gap:12px; align-items:center}
+    .avatar{width:48px; height:48px; border-radius:999px; background:linear-gradient(135deg,#60a5fa,#34d399); display:grid; place-items:center; color:#0b1220; font-weight:800}
+    .title{font-size:1.4rem; font-weight:800}
+    .subtitle{color:var(--muted)}
+
+    nav{display:flex; gap:8px; padding:8px; background:var(--card); border:1px solid var(--border); border-radius:14px}
+    .tab{padding:10px 14px; border-radius:10px; border:1px solid transparent; background:transparent; color:inherit; cursor:pointer}
     .tab.active{background:var(--primary); color:#fff}
+
     .toolbar{display:flex; gap:10px; flex-wrap:wrap}
-    input[type="search"]{padding:10px 12px; border-radius:12px; border:1px solid var(--border); background:var(--card); color:var(--text); outline:none; min-width:240px}
-    input[type="search"]:focus{box-shadow:0 0 0 4px var(--ring); border-color:transparent}
-    .btn{padding:10px 14px; border-radius:12px; border:1px solid var(--border); background:var(--card); color:var(--text); cursor:pointer}
-    .btn.primary{background:var(--primary); border-color:transparent; color:white}
-    .chips{display:flex; flex-wrap:wrap; gap:8px; margin:14px 0}
-    .chip{padding:6px 10px; border-radius:999px; background:var(--chip); color:var(--muted); border:1px solid var(--border); cursor:pointer; user-select:none}
-    .chip.active{outline:2px solid var(--primary); color:var(--text)}
-    .grid{display:grid; grid-template-columns:repeat(12,1fr); gap:16px}
-    .card{grid-column: span 12; background:var(--card); border:1px solid var(--border); border-radius:18px; padding:16px; display:flex; flex-direction:column; gap:10px}
-    @media(min-width:640px){.card{grid-column: span 6}}
-    @media(min-width:1024px){.card{grid-column: span 4}}
-    .card h3{margin:0; font-size:1.05rem}
-    .desc{color:var(--muted); margin:0}
-    .meta{display:flex; gap:12px; align-items:center; flex-wrap:wrap}
-    .badge{display:inline-flex; align-items:center; gap:6px; font-size:.9rem; color:var(--muted)}
-    .spreader{flex:1}
-    .links{display:flex; gap:8px; flex-wrap:wrap}
-    .link{padding:8px 12px; border-radius:10px; border:1px solid var(--border); color:var(--text); text-decoration:none}
-    .link.primary{background:var(--primary); border-color:transparent; color:white}
-    footer{margin:40px 0 12px; color:var(--muted); font-size:.95rem}
-    .empty{border:1px dashed var(--border); background:transparent; text-align:center; padding:24px; border-radius:16px}
-    /* Sections */
+    .input{padding:10px 12px; border:1px solid var(--border); background:var(--card); color:inherit; border-radius:12px; min-width:240px; outline:none}
+    .input:focus{box-shadow:0 0 0 4px var(--ring); border-color:transparent}
+    .btn{padding:10px 14px; border-radius:12px; border:1px solid var(--border); background:var(--card); color:inherit; cursor:pointer}
+    .btn.primary{background:var(--primary); color:#fff; border-color:transparent}
+
     section[hidden]{display:none!important}
+    .grid{display:grid; grid-template-columns:repeat(12,1fr); gap:16px}
+    .card{grid-column:span 12; background:var(--card); border:1px solid var(--border); border-radius:18px; padding:16px; box-shadow:0 8px 24px rgba(0,0,0,.08)}
+    @media(min-width:640px){.card.grid-6{grid-column:span 6}}
+    @media(min-width:1024px){.card.grid-4{grid-column:span 4}}
+    h1,h2,h3{margin:.2rem 0 .6rem}
+    .muted{color:var(--muted)}
+    .chips{display:flex; flex-wrap:wrap; gap:8px; margin:10px 0}
+    .chip{padding:6px 10px; border-radius:999px; background:rgba(148,163,184,.15); border:1px solid var(--border); color:var(--muted)}
+    .chip.active{outline:2px solid var(--primary); color:var(--text)}
+    .meta{display:flex; gap:12px; align-items:center; flex-wrap:wrap}
+    .spacer{flex:1}
+    .link{padding:8px 12px; border-radius:10px; border:1px solid var(--border); text-decoration:none}
+    .link.primary{background:var(--primary); color:#fff; border-color:transparent}
+
+    /* Blog */
     .prose p{line-height:1.8}
-    .stack{display:grid; gap:14px}
-    .input{padding:12px 14px; border:1px solid var(--border); background:var(--card); color:var(--text); border-radius:12px}
-    textarea.input{min-height:140px}
-    .kpi{display:grid; grid-template-columns:repeat(3,1fr); gap:12px}
-    .kpi > div{background:var(--card); border:1px solid var(--border); border-radius:16px; padding:14px}
+    .toc{position:sticky; top:12px}
+    .toc a{text-decoration:none}
+
+    footer{margin:40px 0 12px; color:var(--muted)}
   </style>
 </head>
 <body>
   <div class="container">
     <header>
       <div class="brand">
-        <div class="avatar" id="avatar">GH</div>
+        <div class="avatar" id="avatar">DD</div>
         <div>
-          <div class="title" id="ownerName">My GitHub</div>
-          <div class="muted" id="ownerSub">พอร์ตโฟลิโอแสดงโปรเจกต์ • หน้าเว็บเดียวหลายหน้า (SPA)</div>
+          <div class="title">Dungeon Dungry</div>
+          <div class="subtitle">พอร์ตโฟลิโอ + บล็อกเอกสารเกม • SPA ไฟล์เดียว</div>
         </div>
       </div>
       <nav aria-label="Main">
-        <button class="tab" data-route="#/home">หน้าแรก</button>
-        <button class="tab active" data-route="#/projects">โปรเจกต์</button>
+        <button class="tab" data-route="#/blog">บล็อก</button>
+        <button class="tab" data-route="#/projects">โปรเจกต์</button>
         <button class="tab" data-route="#/about">เกี่ยวกับ</button>
         <button class="tab" data-route="#/contact">ติดต่อ</button>
       </nav>
     </header>
 
-    <!-- HOME -->
-    <section id="page-home" class="stack prose" hidden>
-      <h1>ยินดีต้อนรับ 👋</h1>
-      <p>เว็บไซต์นี้รวบรวมผลงานจาก GitHub ของฉัน (หรือใส่เองแบบ Local) พร้อมค้นหา/กรองตามแท็ก และลิงก์ไปยังเดโม</p>
-      <div class="kpi">
-        <div><div class="muted">Repositories</div><div id="kpi-repos" style="font-weight:700;font-size:1.4rem">—</div></div>
-        <div><div class="muted">Stars รวม</div><div id="kpi-stars" style="font-weight:700;font-size:1.4rem">—</div></div>
-        <div><div class="muted">แท็กทั้งหมด</div><div id="kpi-tags" style="font-weight:700;font-size:1.4rem">—</div></div>
+    <!-- BLOG -->
+    <section id="page-blog">
+      <div class="grid">
+        <aside class="card grid-4 toc">
+          <strong>สารบัญ</strong>
+          <ol id="toc-list" style="margin-top:8px"></ol>
+          <div style="margin-top:12px" class="muted">
+            <a class="link" href="Game Design Document 20082568.pdf" target="_blank" rel="noreferrer">เปิดดู PDF (ถ้ามีใน repo)</a>
+          </div>
+        </aside>
+        <article class="card grid-8 prose" id="blog-article">
+          <h1 id="overview">ภาพรวม (Overview)</h1>
+          <p>Dungeon Dungry คือเกมสำรวจดันเจี้ยน 3D แนว Action-Adventure ผู้เล่นสวมบทเป็นเชฟหนุ่ม “ไลออน” ออกเดินทางสู่ถ้ำ Elenia เพื่อตามหา “เนื้ออาร์ดัส” วัตถุดิบศักดิ์สิทธิ์เพื่อฟื้นฟูสมดุลธรรมชาติ เกมผสานการต่อสู้ เก็บวัตถุดิบ และระบบทำอาหาร เพื่อสร้างบัฟ/ฟื้นพลังและปลดล็อกความก้าวหน้า</p>
+
+          <h2 id="elevator">Elevator Pitch</h2>
+          <p>“เป็นเชฟ…แล้วบุกดันเจี้ยน” – สำรวจ ถล่มมอนสเตอร์ ล่าบอส เก็บวัตถุดิบลับ ปรุงเมนูเพิ่มพลัง แล้วดิ่งสู่ชั้นลึกของ Elenia เพื่อหยุดคำสาปด้วย ‘เนื้ออาร์ดัส’</p>
+
+          <h2 id="theme-setting">Theme & Setting</h2>
+          <ul>
+            <li><strong>โลก:</strong> แฟนตาซีหม่นหลังหายนะ ธรรมชาติผิดเพี้ยน</li>
+            <li><strong>พื้นที่หลัก:</strong> Silverleaf Village → Stone Golem Zone → Blaze Zone → Heart of the Elenia</li>
+            <li><strong>บอส:</strong> Rdus (ผู้พิทักษ์/คำสาปแห่ง Elenia)</li>
+          </ul>
+
+          <h2 id="core-loop">Core Game Loop</h2>
+          <ol>
+            <li>สำรวจแผนที่ / ดันเจี้ยน</li>
+            <li>ต่อสู้มอนสเตอร์/มินิบอส เก็บวัตถุดิบ</li>
+            <li>ทำอาหารเพื่อบัฟ/ฟื้นพลัง</li>
+            <li>อัปเกรดอุปกรณ์ แล้วไปยังชั้นถัดไป</li>
+          </ol>
+
+          <h2 id="mechanics">กลไกหลัก (Mechanics)</h2>
+          <ul>
+            <li><strong>การต่อสู้:</strong> โจมตี/คอมโบ ป้องกัน หลบ ท่าพิเศษเมื่อเกจพร้อม</li>
+            <li><strong>ทรัพยากร:</strong> วัตถุดิบจากศัตรู/จุดเก็บเกี่ยว มีความหายากต่างกัน</li>
+            <li><strong>การทำอาหาร:</strong> สูตรเมนูปลดล็อกจากการสำรวจ ให้บัฟเชิงรุก/รับและฟื้น HP</li>
+            <li><strong>โปรเกรสชัน:</strong> ปรับยากแบบ Adaptive ตามฝีมือ + ปลดล็อกสกิล/อุปกรณ์</li>
+          </ul>
+
+          <h2 id="world">โลก & เลเวล</h2>
+          <h3>1) Silverleaf Village</h3>
+          <p>ฐานหลัก พัก เติมเสบียง เรียนระบบ รับเควสต์แรก</p>
+          <h3>2) Stone Golem Zone</h3>
+          <p>ถ้ำหินป้องกันสูง เน้นจังหวะโจมตี/ทำลายเกราะ</p>
+          <h3>3) Blaze Zone</h3>
+          <p>ดินแดนไฟ ความร้อนสะสม ต้องบริหารทรัพยากร & เมนูต้านทาน</p>
+          <h3>4) Heart of the Elenia (Boss: Rdus)</h3>
+          <p>ชั้นในสุด หลายเฟส ใช้บัฟ/เมนูเต็มรูปแบบ</p>
+
+          <h2 id="characters">ตัวละครหลัก</h2>
+          <ul>
+            <li><strong>ไลออน</strong> – เชฟผู้มีสัมผัสแห่งวัตถุดิบ</li>
+            <li><strong>Rdus</strong> – ผู้พิทักษ์/คำสาปแห่ง Elenia</li>
+          </ul>
+
+          <h2 id="controls">การควบคุม</h2>
+          <ul>
+            <li>WASD: เคลื่อนที่ • คลิกซ้าย: โจมตี/คอมโบ • คลิกขวา: ป้องกัน • Space: หลบ • 1–4: ใช้อาหารด่วน</li>
+          </ul>
+
+          <h2 id="progression">ความก้าวหน้า & เศรษฐศาสตร์</h2>
+          <ul>
+            <li>ปลดล็อกสูตรอาหาร/แผนที่ • คราฟท์อุปกรณ์พิเศษ • Adaptive Difficulty • Freemium (คอสเมติก)</li>
+          </ul>
+
+          <h2 id="telemetry">Telemetry & ML (สรุปวิจัย)</h2>
+          <ul>
+            <li>เก็บสถิติการเล่น (เวลา, ความแม่นยำ, อัตราชนะ/แพ้, การใช้ไอเท็ม ฯลฯ)</li>
+            <li>ป้อนเข้าโมเดล ML เพื่อประเมินระดับผู้เล่น → แนะนำ/ปรับความยากแบบนุ่มนวล</li>
+            <li>เชื่อม Unity: ส่งค่าจาก Gameplay → Inference/Rule-based → ปรับพารามิเตอร์ศัตรู/ดรอป</li>
+          </ul>
+
+          <h2 id="uiux">UI/UX หลัก</h2>
+          <ul>
+            <li>กระเป๋า/สูตรอาหาร ค้นหา/จัดหมวดง่าย</li>
+            <li>เข็มทิศ/มาร์กเกอร์เป้าหมาย</li>
+            <li>บันทึกวัตถุดิบ/สูตรล่าสุด</li>
+          </ul>
+
+          <h2 id="team">ทีมพัฒนา</h2>
+          <ul>
+            <li>Game Designer: อนิวรรต บุญคงมาก</li>
+            <li>Programmer: ธนพัฒน์ บุญขำ</li>
+            <li>Game Artist: พิชญธิดา สุวรรณธาดา</li>
+          </ul>
+
+          <h2 id="contact-info">ติดต่อโครงการ</h2>
+          <p>อีเมล: <a href="mailto:s6530611018@phuket.psu.ac.th">s6530611018@phuket.psu.ac.th</a> • โทร: 082-694-0174</p>
+        </article>
       </div>
     </section>
 
     <!-- PROJECTS -->
-    <section id="page-projects">
-      <div class="toolbar" style="margin:10px 0 6px">
-        <input type="search" id="q" placeholder="ค้นหาโปรเจ็กต์... (ชื่อ/คำอธิบาย/แท็ก)" aria-label="Search projects" />
+    <section id="page-projects" hidden>
+      <div class="toolbar" style="margin:6px 0 12px">
+        <input class="input" id="q" placeholder="ค้นหาโปรเจ็กต์... (ชื่อ/คำอธิบาย/แท็ก)" aria-label="Search projects" />
         <button class="btn" id="toggleSource">ข้อมูล: Local</button>
         <a id="githubLink" class="btn primary" href="https://github.com" target="_blank" rel="noreferrer">ดูบน GitHub</a>
       </div>
-      <section class="chips" id="chips"></section>
-      <section class="grid" id="grid"></section>
-      <div class="empty muted" id="empty" hidden>ไม่พบโปรเจกต์ที่ตรงกับการค้นหา/แท็ก</div>
+      <div class="chips" id="chips"></div>
+      <div class="grid" id="grid"></div>
+      <p class="muted" id="empty" hidden>ไม่พบโปรเจกต์ที่ตรงกับการค้นหา/แท็ก</p>
     </section>
 
     <!-- ABOUT -->
-    <section id="page-about" class="prose stack" hidden>
-      <h1>เกี่ยวกับฉัน</h1>
-      <p>Game Designer & Developer ที่ชอบสร้างเครื่องมือเล็ก ๆ, ML สำหรับเกม และเว็บแอปแบบ minimalist เน้นใช้งานจริง</p>
-      <ul>
-        <li>ถนัด: Unity (C#), Web (HTML/CSS/JS), Data/ML เบื้องต้น</li>
-        <li>โฟกัส: โปรเจกต์ขนาดเล็กคุณภาพดี ปรับแต่งได้ง่าย เปิดเป็นโอเพนซอร์ส</li>
-      </ul>
-      <div class="stack">
-        <h2>ลิงก์</h2>
-        <div class="grid" style="grid-template-columns:repeat(12,1fr); gap:10px">
-          <a class="card" style="grid-column:span 6" href="#/projects">ดูโปรเจกต์ทั้งหมด →</a>
-          <a class="card" style="grid-column:span 6" href="mailto:hello@example.com">ติดต่อทางอีเมล →</a>
-        </div>
+    <section id="page-about" hidden>
+      <div class="grid">
+        <article class="card grid-8">
+          <h1>เกี่ยวกับ</h1>
+          <p>เกม/งานวิจัยแนว Action-Adventure + Adaptive Difficulty โดยใช้ Unity และแนวทาง ML/Rule-based Hybrid</p>
+          <ul>
+            <li>เอนจิน: Unity (C#)</li>
+            <li>โฟกัส: เกมขนาดเล็กคุณภาพดี ปรับแต่งได้ง่าย เปิดเป็นโอเพนซอร์สส่วนหนึ่ง</li>
+          </ul>
+        </article>
+        <aside class="card grid-4">
+          <h2>ไฟล์ที่เกี่ยวข้อง</h2>
+          <ul>
+            <li><a class="link" href="Game Design Document 20082568.pdf" target="_blank">Game Design Document (PDF)</a></li>
+          </ul>
+        </aside>
       </div>
     </section>
 
     <!-- CONTACT -->
-    <section id="page-contact" class="stack" hidden>
-      <h1>ติดต่อ</h1>
-      <form id="contactForm" class="stack" onsubmit="return submitContact(event)">
-        <input class="input" id="name" placeholder="ชื่อของคุณ" required />
-        <input class="input" id="email" type="email" placeholder="อีเมล (สำหรับตอบกลับ)" required />
-        <textarea class="input" id="message" placeholder="ข้อความ" required></textarea>
-        <button class="btn primary" type="submit">ส่งข้อความ</button>
-        <div id="contactStatus" class="muted"></div>
-      </form>
-      <p class="muted">* ตัวอย่างฟอร์มแบบไม่พึ่ง backend: จะเปิดอีเมลไคลเอนต์พร้อมร่างข้อความให้</p>
+    <section id="page-contact" hidden>
+      <article class="card grid-12">
+        <h1>ติดต่อ</h1>
+        <form id="contactForm" onsubmit="return submitContact(event)" class="grid" style="grid-template-columns:repeat(12,1fr); gap:12px">
+          <input class="card grid-6 input" id="name" placeholder="ชื่อของคุณ" required />
+          <input class="card grid-6 input" id="email" type="email" placeholder="อีเมล (สำหรับตอบกลับ)" required />
+          <textarea class="card grid-12 input" id="message" placeholder="ข้อความ" required></textarea>
+          <div class="grid-12" style="display:flex; gap:10px; align-items:center">
+            <button class="btn primary" type="submit">ส่งข้อความ</button>
+            <span id="contactStatus" class="muted"></span>
+          </div>
+        </form>
+      </article>
     </section>
 
-    <footer>
-      สร้างด้วย ❤ และ HTML/CSS/JS ธรรมดา • นำไฟล์นี้ไปวางใน <code>gh-pages</code> หรือเปิดใช้ GitHub Pages จากสาขา <code>main</code>
+    <footer class="muted">
+      สร้างด้วย ❤ และ HTML/CSS/JS ธรรมดา • วางไฟล์นี้เป็น <code>index.html</code> ที่รากของ repo • สลับหน้าได้ผ่าน URL hash
     </footer>
   </div>
 
   <script>
-// === CONFIG ===
-const CONFIG = {
-  username: "aniwat-hl",       // GitHub username ของคุณ
-  useGitHubAPI: true,          // ✅ เปิดเป็น true เพื่อดึงจาก GitHub API
-  defaultTags: ["web","unity","ml","game","tool"],
-  contactTo: "aniwat.hl.b@gmail.com", // เปลี่ยนเป็นอีเมลจริงที่อยากให้ติดต่อ
-};
+    // === CONFIG ===
+    const CONFIG = {
+      username: "aniwat-hl",     // GitHub username ของคุณ
+      useGitHubAPI: true,         // true = ดึง repo จาก GitHub อัตโนมัติ
+      defaultTags: ["web","unity","ml","game","tool"],
+      contactTo: "s6530611018@phuket.psu.ac.th",
+    };
 
-
-    // โปรเจกต์ตัวอย่าง (แก้ไขได้ตามต้องการ)
-    const localProjects = [
-      {name:"adaptive-hero-progression", description:"ระบบปรับระดับความยากอัตโนมัติด้วย ML สำหรับเกม Unity", tags:["unity","ml","game"], repo:"https://github.com/yourname/adaptive-hero-progression", demo:"", homepage:"", stars:0, updated_at:"2025-08-15"},
-      {name:"werewolf-card-designer", description:"เว็บเครื่องมือออกแบบการ์ดเกม Werewolf สไตล์มินิมอล", tags:["web","tool"], repo:"https://github.com/yourname/werewolf-card-designer", demo:"https://yourname.github.io/werewolf-card-designer/", homepage:"", stars:0, updated_at:"2025-07-20"},
-      {name:"pixel-sticker-studio", description:"สตูดิโอสร้างสติ๊กเกอร์พิกเซลอาร์ต พร้อมส่งออกชุด 4x4", tags:["web","art","tool"], repo:"https://github.com/yourname/pixel-sticker-studio", demo:"", homepage:"", stars:0, updated_at:"2025-06-01"}
-    ];
-
-    // ===== STATE =====
-    let state = { source: (CONFIG.useGitHubAPI?'github':'local'), projects: [], query:'', activeTag:'all', allTags:new Set() };
-
-    // ===== DOM =====
-    const elGrid = document.getElementById('grid');
-    const elChips = document.getElementById('chips');
-    const elEmpty = document.getElementById('empty');
-    const elToggle = document.getElementById('toggleSource');
-    const elOwner = document.getElementById('ownerName');
-    const elAvatar = document.getElementById('avatar');
-    const elLink = document.getElementById('githubLink');
-    const elKPIRepos = document.getElementById('kpi-repos');
-    const elKPIStars = document.getElementById('kpi-stars');
-    const elKPITags = document.getElementById('kpi-tags');
-
-    // ===== ROUTER (hash-based) =====
+    // ===== SPA Router =====
     const routes = {
-      '#/home': 'page-home',
+      '#/blog': 'page-blog',
       '#/projects': 'page-projects',
       '#/about': 'page-about',
       '#/contact': 'page-contact',
@@ -180,31 +243,56 @@ const CONFIG = {
       });
     }
     function router(){
-      const hash = window.location.hash || '#/projects';
+      const hash = window.location.hash || '#/blog';
       Object.values(routes).forEach(id=>document.getElementById(id).hidden = true);
-      const id = routes[hash] || 'page-projects';
+      const id = routes[hash] || 'page-blog';
       document.getElementById(id).hidden = false;
       setActiveTab(hash);
       document.title = {
-        '#/home':'Home • GitHub Portfolio', '#/projects':'Projects • GitHub Portfolio',
-        '#/about':'About • GitHub Portfolio', '#/contact':'Contact • GitHub Portfolio'
-      }[hash] || 'GitHub Portfolio';
+        '#/blog':'บล็อก • Dungeon Dungry', '#/projects':'โปรเจกต์ • Dungeon Dungry',
+        '#/about':'เกี่ยวกับ • Dungeon Dungry', '#/contact':'ติดต่อ • Dungeon Dungry'
+      }[hash] || 'Dungeon Dungry';
     }
     window.addEventListener('hashchange', router);
     document.querySelectorAll('nav .tab').forEach(b=> b.addEventListener('click', ()=>{ location.hash = b.dataset.route; }));
 
-    // ===== UTIL =====
-    function initials(name){ return (name||'GH').split(/\s+/).map(s=>s[0]).join('').slice(0,2).toUpperCase(); }
-    function setOwner(name, url){ elOwner.textContent = name ? `${name}` : 'My GitHub'; elAvatar.textContent = initials(name || 'GH'); if(url) elLink.href = url; }
+    // ===== Blog TOC =====
+    function buildTOC(){
+      const article = document.getElementById('blog-article');
+      const tocList = document.getElementById('toc-list');
+      if(!article || !tocList) return;
+      tocList.innerHTML = '';
+      article.querySelectorAll('h1[id],h2[id]').forEach(h=>{
+        const li = document.createElement('li');
+        const a = document.createElement('a');
+        a.href = `#${h.id}`; a.textContent = h.textContent; a.onclick = ()=> setTimeout(()=> window.scrollBy(0,-10), 0);
+        li.appendChild(a); tocList.appendChild(li);
+      });
+    }
+
+    // ===== Projects (Local + GitHub) =====
+    const localProjects = [
+      {name:"adaptive-hero-progression", description:"ระบบปรับความยากอัตโนมัติด้วย ML สำหรับเกม Unity", tags:["unity","ml","game"], repo:"https://github.com/aniwat-hl/adaptive-hero-progression", demo:"", homepage:"", stars:0, updated_at:"2025-08-15"},
+      {name:"werewolf-card-designer", description:"เว็บเครื่องมือออกแบบการ์ดเกม Werewolf สไตล์มินิมอล", tags:["web","tool"], repo:"https://github.com/aniwat-hl/werewolf-card-designer", demo:"https://aniwat-hl.github.io/werewolf-card-designer/", homepage:"", stars:0, updated_at:"2025-07-20"}
+    ];
+    let state = { source: (CONFIG.useGitHubAPI?'github':'local'), projects: [], query:'', activeTag:'all', allTags:new Set() };
+
+    const elGrid = document.getElementById('grid');
+    const elChips = document.getElementById('chips');
+    const elEmpty = document.getElementById('empty');
+    const elToggle = document.getElementById('toggleSource');
+    const elLink = document.getElementById('githubLink');
+
     function formatDate(d){ try{ return new Date(d).toLocaleDateString(undefined,{year:'numeric',month:'short',day:'2-digit'});}catch{ return d } }
 
-    // ===== PROJECT LIST =====
     function renderChips(){
       const tags = ['all', ...Array.from(state.allTags).sort()];
-      const elCh = document.getElementById('chips');
-      elCh.innerHTML='';
+      elChips.innerHTML = '';
       tags.forEach(tag=>{
-        const c=document.createElement('button'); c.className='chip'+(state.activeTag===tag?' active':''); c.textContent=tag; c.onclick=()=>{state.activeTag=tag; render()}; elCh.appendChild(c);
+        const c = document.createElement('button');
+        c.className = 'chip'+(state.activeTag===tag?' active':''); c.textContent = tag;
+        c.onclick = ()=>{ state.activeTag = tag; renderProjects(); };
+        elChips.appendChild(c);
       });
     }
     function projectMatches(p){
@@ -213,28 +301,27 @@ const CONFIG = {
       const matchTag = state.activeTag==='all' || (p.tags||[]).includes(state.activeTag);
       return matchQ && matchTag;
     }
-    function render(){
+    function renderProjects(){
       const filtered = state.projects.filter(projectMatches);
-      elGrid.innerHTML='';
-      elEmpty.hidden = filtered.length!==0;
-      filtered.forEach(p=>{ const card=document.createElement('article'); card.className='card'; card.innerHTML=`
-        <h3>${p.name}</h3>
-        <p class="desc">${p.description || '—'}</p>
-        <div class="meta">
-          <span class="badge" title="Stars">⭐ ${p.stars||0}</span>
-          <span class="badge" title="Updated">⏱ ${p.updated_at ? formatDate(p.updated_at) : '—'}</span>
-          <span class="spreader"></span>
-          <div class="links">
-            ${p.repo ? `<a class="link" href="${p.repo}" target="_blank" rel="noreferrer">Repo</a>` : ''}
-            ${(p.demo || p.homepage) ? `<a class="link primary" href="${p.demo||p.homepage}" target="_blank" rel="noreferrer">Demo</a>` : ''}
+      elGrid.innerHTML = '';
+      elEmpty.hidden = filtered.length !== 0;
+      filtered.forEach(p=>{
+        const card = document.createElement('div');
+        card.className = 'card grid-4';
+        card.innerHTML = `
+          <h3>${p.name}</h3>
+          <p class="muted">${p.description || '—'}</p>
+          <div class="meta">
+            <span class="muted">⭐ ${p.stars||0}</span>
+            <span class="muted">⏱ ${p.updated_at ? formatDate(p.updated_at) : '—'}</span>
+            <span class="spacer"></span>
+            <a class="link" href="${p.repo}" target="_blank" rel="noreferrer">Repo</a>
+            ${(p.demo||p.homepage) ? `<a class="link primary" href="${p.demo||p.homepage}" target="_blank" rel="noreferrer">Demo</a>` : ''}
           </div>
-        </div>
-        <div class="chips">${(p.tags||[]).map(t=>`<span class="chip">${t}</span>`).join('')}</div>`; elGrid.appendChild(card);
+          <div class="chips" style="margin-top:10px">${(p.tags||[]).map(t=>`<span class="chip">${t}</span>`).join('')}</div>
+        `;
+        elGrid.appendChild(card);
       });
-      // KPIs on Home
-      if(elKPIRepos){ elKPIRepos.textContent = state.projects.length; }
-      if(elKPIStars){ elKPIStars.textContent = state.projects.reduce((s,p)=>s+(p.stars||0),0); }
-      if(elKPITags){ elKPITags.textContent = Array.from(state.allTags).length; }
     }
 
     async function loadFromGitHub(username){
@@ -252,49 +339,54 @@ const CONFIG = {
       state.projects = projects;
       state.allTags = new Set(CONFIG.defaultTags || []);
       projects.forEach(p => (p.tags||[]).forEach(t=> state.allTags.add(t)) );
-      renderChips(); render();
+      renderChips(); renderProjects();
     }
 
-    // ===== CONTACT FORM (mailto draft) =====
+    // ===== Contact form (mailto) =====
     function submitContact(e){
       e.preventDefault();
       const name = document.getElementById('name').value.trim();
       const email = document.getElementById('email').value.trim();
       const message = document.getElementById('message').value.trim();
       const status = document.getElementById('contactStatus');
-      if(!name || !email || !message){ status.textContent = 'กรุณากรอกข้อมูลให้ครบ'; status.style.color='var(--warn)'; return false; }
+      if(!name || !email || !message){ status.textContent = 'กรุณากรอกให้ครบ'; return false; }
       const subject = encodeURIComponent(`Portfolio contact from ${name}`);
       const body = encodeURIComponent(`From: ${name} <${email}>\n\n${message}`);
       window.location.href = `mailto:${CONFIG.contactTo}?subject=${subject}&body=${body}`;
-      status.textContent = 'กำลังเปิดอีเมลไคลเอนต์...'; status.style.color='var(--muted)';
+      status.textContent = 'กำลังเปิดอีเมลไคลเอนต์...';
       return false;
     }
     window.submitContact = submitContact;
 
-    // ===== BOOTSTRAP =====
+    // ===== Bootstrap =====
     function wireSearch(){
       const elQ = document.getElementById('q');
-      elQ.addEventListener('input', (e)=>{ state.query = e.target.value; render(); });
+      if(!elQ) return; // if projects page isn't rendered yet
+      elQ.addEventListener('input', (e)=>{ state.query = e.target.value; renderProjects(); });
     }
-    async function wireToggle(){
+    function wireToggle(){
+      if(!elToggle) return;
       elToggle.addEventListener('click', async ()=>{
         state.source = state.source==='local' ? 'github' : 'local';
         elToggle.textContent = `ข้อมูล: ${state.source==='local'?'Local':'GitHub'}`;
         if(state.source==='github'){
           if(!CONFIG.username){ alert('กรุณาตั้งค่า CONFIG.username เป็น GitHub username ของคุณ'); state.source='local'; elToggle.textContent='ข้อมูล: Local'; return; }
-          try{ setOwner(CONFIG.username, `https://github.com/${CONFIG.username}`); const data = await loadFromGitHub(CONFIG.username); ingest(data); }
-          catch(err){ console.error(err); alert('โหลดข้อมูลจาก GitHub ไม่สำเร็จ จะใช้ข้อมูล Local แทน'); setOwner('My GitHub','https://github.com'); ingest(localProjects); }
-        } else { setOwner('My GitHub','https://github.com'); ingest(localProjects); }
+          try{ const data = await loadFromGitHub(CONFIG.username); ingest(data); elLink.href = `https://github.com/${CONFIG.username}`; }
+          catch(err){ console.error(err); alert('โหลดข้อมูลจาก GitHub ไม่สำเร็จ จะใช้ข้อมูล Local แทน'); ingest(localProjects); elLink.href = 'https://github.com'; }
+        } else { ingest(localProjects); elLink.href = 'https://github.com'; }
       });
     }
 
     async function bootstrap(){
       router();
+      buildTOC();
+      // Projects data
+      ingest(CONFIG.useGitHubAPI && CONFIG.username ? await loadFromGitHub(CONFIG.username).catch(()=>localProjects) : localProjects);
+      // UI bindings
       wireSearch();
       wireToggle();
-      setOwner('My GitHub', 'https://github.com');
-      ingest(localProjects);
-      if(CONFIG.useGitHubAPI && CONFIG.username){ elToggle.click(); }
+      // Toggle button state
+      if(elToggle){ elToggle.textContent = `ข้อมูล: ${CONFIG.useGitHubAPI?'GitHub':'Local'}`; }
     }
     bootstrap();
   </script>
