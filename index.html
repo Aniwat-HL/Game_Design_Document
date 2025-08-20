@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Dungeon Dungry • Portfolio & Blog</title>
-  <meta name="description" content="Single-file portfolio + blog for Dungeon Dungry with GitHub projects, About, Contact, and a long-form document page.">
+  <meta name="description" content="Single-file SPA: Blog document + GitHub Projects + About + Contact. Ready for GitHub Pages.">
   <style>
     :root{
       --bg:#0b0d10; --card:#11151a; --muted:#9aa4b2; --text:#e6edf3; --border:#1f2937; --primary:#3b82f6; --ring:rgba(59,130,246,.35);
@@ -24,7 +24,7 @@
     .title{font-size:1.4rem; font-weight:800}
     .subtitle{color:var(--muted)}
 
-    nav{display:flex; gap:8px; padding:8px; background:var(--card); border:1px solid var(--border); border-radius:14px}
+    nav{display:flex; gap:8px; padding:8px; background:var(--card); border:1px solid var(--border); border-radius:14px; justify-content:flex-start}
     .tab{padding:10px 14px; border-radius:10px; border:1px solid transparent; background:transparent; color:inherit; cursor:pointer}
     .tab.active{background:var(--primary); color:#fff}
 
@@ -37,9 +37,9 @@
     section[hidden]{display:none!important}
     .grid{display:grid; grid-template-columns:repeat(12,1fr); gap:16px}
     .card{grid-column:span 12; background:var(--card); border:1px solid var(--border); border-radius:18px; padding:16px; box-shadow:0 8px 24px rgba(0,0,0,.08)}
-    @media(min-width:640px){.card.grid-6{grid-column:span 6}}
-    @media(min-width:1024px){.card.grid-4{grid-column:span 4}}
-    h1,h2,h3{margin:.2rem 0 .6rem}
+    @media(min-width:640px){.grid-6{grid-column:span 6}}
+    @media(min-width:1024px){.grid-4{grid-column:span 4} .grid-8{grid-column:span 8}}
+    h1,h2,h3{margin:.2rem 0 .6rem; scroll-margin-top:80px}
     .muted{color:var(--muted)}
     .chips{display:flex; flex-wrap:wrap; gap:8px; margin:10px 0}
     .chip{padding:6px 10px; border-radius:999px; background:rgba(148,163,184,.15); border:1px solid var(--border); color:var(--muted)}
@@ -51,8 +51,9 @@
 
     /* Blog */
     .prose p{line-height:1.8}
-    .toc{position:sticky; top:12px}
-    .toc a{text-decoration:none}
+    .toc{position:sticky; top:12px; text-align:left} /* ✅ ชิดซ้าย */
+    .toc ol{padding-left:18px; margin:8px 0 0}
+    .toc a{display:block; padding:4px 0; text-decoration:none}
 
     footer{margin:40px 0 12px; color:var(--muted)}
   </style>
@@ -80,7 +81,7 @@
       <div class="grid">
         <aside class="card grid-4 toc">
           <strong>สารบัญ</strong>
-          <ol id="toc-list" style="margin-top:8px"></ol>
+          <ol id="toc-list"></ol>
           <div style="margin-top:12px" class="muted">
             <a class="link" href="Game Design Document 20082568.pdf" target="_blank" rel="noreferrer">เปิดดู PDF (ถ้ามีใน repo)</a>
           </div>
@@ -253,7 +254,7 @@
         '#/about':'เกี่ยวกับ • Dungeon Dungry', '#/contact':'ติดต่อ • Dungeon Dungry'
       }[hash] || 'Dungeon Dungry';
     }
-    window.addEventListener('hashchange', router);
+    window.addEventListener('hashchange', ()=>{ router(); if(location.hash==="#/blog") buildTOC(); });
     document.querySelectorAll('nav .tab').forEach(b=> b.addEventListener('click', ()=>{ location.hash = b.dataset.route; }));
 
     // ===== Blog TOC =====
@@ -359,34 +360,30 @@
     window.submitContact = submitContact;
 
     // ===== Bootstrap =====
-    function wireSearch(){
-      const elQ = document.getElementById('q');
-      if(!elQ) return; // if projects page isn't rendered yet
-      elQ.addEventListener('input', (e)=>{ state.query = e.target.value; renderProjects(); });
-    }
-    function wireToggle(){
-      if(!elToggle) return;
-      elToggle.addEventListener('click', async ()=>{
-        state.source = state.source==='local' ? 'github' : 'local';
-        elToggle.textContent = `ข้อมูล: ${state.source==='local'?'Local':'GitHub'}`;
-        if(state.source==='github'){
-          if(!CONFIG.username){ alert('กรุณาตั้งค่า CONFIG.username เป็น GitHub username ของคุณ'); state.source='local'; elToggle.textContent='ข้อมูล: Local'; return; }
-          try{ const data = await loadFromGitHub(CONFIG.username); ingest(data); elLink.href = `https://github.com/${CONFIG.username}`; }
-          catch(err){ console.error(err); alert('โหลดข้อมูลจาก GitHub ไม่สำเร็จ จะใช้ข้อมูล Local แทน'); ingest(localProjects); elLink.href = 'https://github.com'; }
-        } else { ingest(localProjects); elLink.href = 'https://github.com'; }
-      });
-    }
-
     async function bootstrap(){
       router();
       buildTOC();
-      // Projects data
-      ingest(CONFIG.useGitHubAPI && CONFIG.username ? await loadFromGitHub(CONFIG.username).catch(()=>localProjects) : localProjects);
+      // Projects data (prefer GitHub; fallback to local)
+      const data = (CONFIG.useGitHubAPI && CONFIG.username)
+        ? await loadFromGitHub(CONFIG.username).catch(()=>localProjects)
+        : localProjects;
+      ingest(data);
       // UI bindings
-      wireSearch();
-      wireToggle();
-      // Toggle button state
-      if(elToggle){ elToggle.textContent = `ข้อมูล: ${CONFIG.useGitHubAPI?'GitHub':'Local'}`; }
+      const elQ = document.getElementById('q');
+      if(elQ){ elQ.addEventListener('input', (e)=>{ state.query = e.target.value; renderProjects(); }); }
+      if(elToggle){
+        elToggle.textContent = `ข้อมูล: ${CONFIG.useGitHubAPI?'GitHub':'Local'}`;
+        elToggle.addEventListener('click', async ()=>{
+          state.source = state.source==='local' ? 'github' : 'local';
+          elToggle.textContent = `ข้อมูล: ${state.source==='local'?'Local':'GitHub'}`;
+          if(state.source==='github'){
+            if(!CONFIG.username){ alert('กรุณาตั้งค่า CONFIG.username เป็น GitHub username ของคุณ'); state.source='local'; elToggle.textContent='ข้อมูล: Local'; return; }
+            try{ const d = await loadFromGitHub(CONFIG.username); ingest(d); } catch{ ingest(localProjects); }
+          } else { ingest(localProjects); }
+        });
+      }
+      const elGL = document.getElementById('githubLink');
+      if(elGL){ elGL.href = CONFIG.username ? `https://github.com/${CONFIG.username}` : 'https://github.com'; }
     }
     bootstrap();
   </script>
